@@ -1,253 +1,225 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>釜山 8 人行｜PM 專案管理平台 v4.0</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>GA 新聞報表自動化工具</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        .active-tab { border-bottom: 4px solid #2563eb; color: #2563eb; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f4f7f6; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { font-size: 24px; color: #333; text-align: center; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        .section { background-color: #f9fdf9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #dcdcdc; }
+        .section-title { font-weight: bold; font-size: 18px; color: #2E7D32; margin-bottom: 10px; }
+        label { font-weight: bold; font-size: 14px; color: #444; }
+        input[type="text"], textarea { width: 100%; padding: 8px; margin-top: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        textarea { height: 120px; resize: vertical; }
+        input[type="file"] { font-size: 16px; margin-top: 10px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        button { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 15px; font-weight: bold; color: white; transition: 0.3s; }
+        .btn-primary { background-color: #4CAF50; }
+        .btn-primary:hover { background-color: #45a049; }
+        .btn-secondary { background-color: #FF9800; }
+        .btn-secondary:hover { background-color: #e68a00; }
+        .copy-btn { background-color: #008CBA; display: none; margin-top: 20px; width: 100%; }
+        .copy-btn:hover { background-color: #007399; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #4CAF50; color: white; }
+        td.title-col { text-align: left; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen">
-    <header class="bg-white border-b sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div>
-                <h1 class="text-2xl font-black text-slate-800 tracking-tight">BUSAN 2026 <span class="text-blue-600">PM DASHBOARD</span></h1>
-                <p class="text-xs text-slate-400 uppercase tracking-widest font-bold">Group of 8 Plan</p>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="exportAll()" class="bg-emerald-600 text-white p-2 rounded-lg text-sm"><i class="fas fa-download"></i></button>
-                <button onclick="clearAllData()" class="bg-rose-100 text-rose-600 p-2 rounded-lg text-sm"><i class="fas fa-trash-alt"></i></button>
-            </div>
-        </div>
-        <nav class="flex justify-center bg-white border-t overflow-x-auto">
-            <button onclick="showTab('tab-hotel')" class="tab-btn px-6 py-3 font-bold text-sm active-tab">住宿評分</button>
-            <button onclick="showTab('tab-flight')" class="tab-btn px-6 py-3 font-bold text-sm">機票/交通</button>
-            <button onclick="showTab('tab-finance')" class="tab-btn px-6 py-3 font-bold text-sm">財務/記帳</button>
-        </nav>
-    </header>
+<body>
 
-    <main class="max-w-7xl mx-auto p-4 md:p-8">
+<div class="container">
+    <h1>🚀 GA 新聞報表自動化工具</h1>
+    
+    <div class="section">
+        <div class="section-title">步驟一：上傳 GA 資料與設定</div>
+        <label>🛑 要排除的網頁標題關鍵字 (半形逗號分隔)：</label>
+        <input type="text" id="excludeKeywords" value="首頁, 網站導覽, 找不到網頁, Page Not Found">
         
-        <div id="tab-hotel" class="tab-content active">
-            <div class="bg-white p-6 rounded-2xl shadow-sm mb-6 border border-slate-200">
-                <h2 class="font-bold text-lg mb-4 text-slate-700">新增住宿方案</h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                    <input id="h-name" type="text" placeholder="飯店名稱" class="border p-2 rounded-lg">
-                    <input id="h-price" type="number" placeholder="5晚總價 (TWD)" class="border p-2 rounded-lg">
-                    <input id="h-dist" type="number" placeholder="地鐵距離(m)" class="border p-2 rounded-lg">
-                    <input id="h-space" type="number" placeholder="空間(m²)" class="border p-2 rounded-lg">
-                    <input id="h-addr" type="text" placeholder="地址" class="border p-2 rounded-lg md:col-span-2">
-                    <input id="h-link" type="text" placeholder="訂房網網址" class="border p-2 rounded-lg md:col-span-2">
-                </div>
-                <div id="paste-area" class="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center bg-slate-50 mb-4 cursor-pointer hover:bg-slate-100 transition">
-                    <p id="paste-hint" class="text-slate-400 text-sm">點擊並 Ctrl+V 貼上飯店截圖</p>
-                    <img id="preview-img" class="mx-auto max-h-40 hidden rounded shadow-md">
-                </div>
-                <button onclick="addHotel()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-200 hover:bg-blue-700 transition">加入決策表</button>
-            </div>
-            <div id="hotel-list" class="space-y-4"></div>
+        <label style="display:block; margin-top:15px;">📁 上傳 GA 匯出的原始資料 (.xlsx 或 .csv)：</label>
+        <input type="file" id="fileUpload" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+        <p id="uploadStatus" style="color: #d32f2f; font-weight: bold; font-size: 14px;">尚未上傳資料</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">步驟二：選擇你要產生的報表</div>
+        
+        <div style="margin-bottom: 20px;">
+            <label>📋 模式 A：產出全站熱門 Top 30</label><br>
+            <button class="btn-primary" onclick="generateTop30()" style="margin-top: 5px;">產生 Top 30 報表</button>
         </div>
 
-        <div id="tab-flight" class="tab-content">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="font-bold text-lg mb-4">機票/長途交通 (如 KTX)</h2>
-                    <div class="space-y-3">
-                        <input id="f-desc" type="text" placeholder="項目 (如：去程班機 IT602)" class="border p-2 w-full rounded-lg">
-                        <input id="f-time" type="datetime-local" class="border p-2 w-full rounded-lg">
-                        <input id="f-note" type="text" placeholder="備註 (如：要在哪集合)" class="border p-2 w-full rounded-lg">
-                        <button onclick="addFlight()" class="w-full bg-slate-800 text-white py-2 rounded-lg font-bold">新增時程</button>
-                    </div>
-                </div>
-                <div class="space-y-4" id="flight-list"></div>
-            </div>
+        <hr style="border: 0; border-top: 1px dashed #ccc; margin: 20px 0;">
+
+        <div>
+            <label>🎯 模式 B：本週發布新聞比對 (貼上你要找的新聞標題，一行一個)</label>
+            <textarea id="newsList" placeholder="請將本週發布的新聞標題貼在這裡...&#10;第一篇新聞標題&#10;第二篇新聞標題&#10;第三篇新聞標題"></textarea>
+            <button class="btn-secondary" onclick="generateWeeklyMatch()" style="margin-top: 5px;">產生本週新聞比對報表</button>
         </div>
+    </div>
 
-        <div id="tab-finance" class="tab-content">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6 text-center">
-                <div class="text-slate-400 text-sm mb-1 uppercase tracking-tighter">當前預估總支出 (8人)</div>
-                <div id="total-cost-display" class="text-4xl font-black text-slate-800">TWD 0</div>
-            </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="font-bold text-lg mb-4">新增記帳/代墊</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <input id="e-item" type="text" placeholder="支出項目 (如：環球影城門票)" class="border p-2 rounded-lg">
-                    <input id="e-amount" type="number" placeholder="金額 (TWD)" class="border p-2 rounded-lg">
-                    <button onclick="addExpense()" class="bg-blue-600 text-white font-bold rounded-lg px-6 py-2">新增支出</button>
-                </div>
-                <div class="mt-6 overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead class="text-slate-400 text-xs uppercase">
-                            <tr>
-                                <th class="pb-3 px-2">項目</th>
-                                <th class="pb-3 px-2">金額</th>
-                                <th class="pb-3 px-2 text-right">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="expense-list" class="divide-y border-t"></tbody>
-                    </table>
-                </div>
-            </div>
+    <button id="copyBtn" class="copy-btn" onclick="copyTable()">📋 點我一鍵複製下方表格</button>
+
+    <div id="resultArea">
         </div>
+</div>
 
-    </main>
+<script>
+    // 全域變數儲存解析後的 GA 資料
+    let globalGAData = [];
+    let globalTotalViews = 0;
 
-    <script>
-        // 專案數據結構
-        let projectData = JSON.parse(localStorage.getItem('busan_travel_v4')) || {
-            hotels: [],
-            flights: [],
-            expenses: []
+    // 檔案上傳處理
+    document.getElementById('fileUpload').addEventListener('change', function(e) {
+        var files = e.target.files;
+        if (files.length === 0) return;
+        
+        document.getElementById('uploadStatus').style.color = "#FF9800";
+        document.getElementById('uploadStatus').innerText = "資料讀取中...";
+
+        var f = files[0];
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, {type: 'array'});
+            var firstSheetName = workbook.SheetNames[0];
+            var worksheet = workbook.Sheets[firstSheetName];
+            var jsonData = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
+            
+            processRawData(jsonData);
         };
+        reader.readAsArrayBuffer(f);
+    });
 
-        let currentImageData = "";
+    // 預處理資料 (清洗、排除、排序、加總)
+    function processRawData(data) {
+        globalTotalViews = 0;
+        let validRows = [];
+        let excludeStr = document.getElementById('excludeKeywords').value;
+        let excludeList = excludeStr.split(',').map(item => item.trim()).filter(item => item !== "");
 
-        // Tab 切換邏輯
-        function showTab(id) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active-tab'));
-            document.getElementById(id).classList.add('active');
-            event.currentTarget.classList.add('active-tab');
-        }
+        data.forEach(row => {
+            let title = row["網頁標題"] || row["Page title"] || "";
+            let views = row["瀏覽"] || row["Views"] || 0;
+            let time = row["平均參與時間"] || row["Average engagement time"] || 0;
 
-        // 圖片貼上邏輯
-        document.getElementById('paste-area').addEventListener('paste', function(e) {
-            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-            for (let i = 0; i < items.length; i++) {
-                if (items[i].type.indexOf("image") !== -1) {
-                    const blob = items[i].getAsFile();
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        currentImageData = event.target.result;
-                        document.getElementById('preview-img').src = currentImageData;
-                        document.getElementById('preview-img').classList.remove('hidden');
-                        document.getElementById('paste-hint').classList.add('hidden');
-                    };
-                    reader.readAsDataURL(blob);
-                }
+            let isExcluded = excludeList.some(keyword => title.includes(keyword));
+
+            if (!isExcluded && title !== "" && !isNaN(views) && views !== "") {
+                let viewCount = parseInt(views, 10);
+                globalTotalViews += viewCount;
+                validRows.push({
+                    title: title.trim(),
+                    views: viewCount,
+                    time: parseFloat(time)
+                });
             }
         });
 
-        // 飯店模組
-        function addHotel() {
-            const name = document.getElementById('h-name').value;
-            const price = parseFloat(document.getElementById('h-price').value || 0);
-            const dist = parseFloat(document.getElementById('h-dist').value || 0);
-            const space = parseFloat(document.getElementById('h-space').value || 0);
-            
-            // PM 權重評分公式
-            const distScore = dist <= 200 ? 10 : (dist <= 500 ? 7 : 4);
-            const priceScore = (price/8/5) <= 1200 ? 10 : ((price/8/5) <= 2000 ? 7 : 4);
-            const total = (distScore * 0.5) + (priceScore * 0.3) + (space >= 60 ? 2 : 1);
+        // 依照瀏覽量遞減排序，並賦予「流量排行」
+        validRows.sort((a, b) => b.views - a.views);
+        validRows.forEach((item, index) => {
+            item.rank = index + 1; // 加上全站排名屬性
+        });
 
-            projectData.hotels.push({
-                name, price, dist, space, 
-                addr: document.getElementById('h-addr').value,
-                link: document.getElementById('h-link').value,
-                img: currentImageData,
-                total
-            });
-            currentImageData = "";
-            document.getElementById('preview-img').classList.add('hidden');
-            document.getElementById('paste-hint').classList.remove('hidden');
-            saveAndRender();
-        }
-
-        // 時程模組 (機票/交通)
-        function addFlight() {
-            projectData.flights.push({
-                desc: document.getElementById('f-desc').value,
-                time: document.getElementById('f-time').value,
-                note: document.getElementById('f-note').value
-            });
-            saveAndRender();
-        }
-
-        // 財務模組
-        function addExpense() {
-            projectData.expenses.push({
-                item: document.getElementById('e-item').value,
-                amount: parseFloat(document.getElementById('e-amount').value || 0)
-            });
-            saveAndRender();
-        }
-
-        function saveAndRender() {
-            localStorage.setItem('busan_travel_v4', JSON.stringify(projectData));
-            renderHotels();
-            renderFlights();
-            renderExpenses();
-        }
-
-        function renderHotels() {
-            const list = document.getElementById('hotel-list');
-            projectData.hotels.sort((a, b) => b.total - a.total);
-            list.innerHTML = projectData.hotels.map((h, i) => `
-                <div class="bg-white rounded-2xl shadow-sm border p-4 flex gap-4 items-center">
-                    ${h.img ? `<img src="${h.img}" class="w-24 h-24 object-cover rounded-lg">` : `<div class="w-24 h-24 bg-slate-100 rounded-lg"></div>`}
-                    <div class="flex-1">
-                        <div class="font-black text-slate-800">${h.name}</div>
-                        <div class="text-xs text-slate-400 truncate w-48">${h.addr}</div>
-                        <div class="mt-2 text-xs font-bold text-blue-600">人均: TWD ${(h.price/8).toFixed(0)}</div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-2xl font-black text-orange-500">${h.total.toFixed(1)}</div>
-                        <button onclick="deleteItem('hotels', ${i})" class="text-rose-400 text-xs"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderFlights() {
-            const list = document.getElementById('flight-list');
-            projectData.flights.sort((a,b) => new Date(a.time) - new Date(b.time));
-            list.innerHTML = projectData.flights.map((f, i) => `
-                <div class="bg-white p-4 rounded-xl border-l-4 border-blue-600 shadow-sm flex justify-between">
-                    <div>
-                        <div class="text-xs text-blue-600 font-bold">${f.time.replace('T', ' ')}</div>
-                        <div class="font-bold text-slate-800">${f.desc}</div>
-                        <div class="text-xs text-slate-400">${f.note}</div>
-                    </div>
-                    <button onclick="deleteItem('flights', ${i})" class="text-slate-300 hover:text-rose-500"><i class="fas fa-times-circle"></i></button>
-                </div>
-            `).join('');
-        }
-
-        function renderExpenses() {
-            const list = document.getElementById('expense-list');
-            let total = 0;
-            list.innerHTML = projectData.expenses.map((e, i) => {
-                total += e.amount;
-                return `
-                    <tr class="text-sm">
-                        <td class="py-3 px-2">${e.item}</td>
-                        <td class="py-3 px-2 font-bold text-blue-600">TWD ${e.amount.toLocaleString()}</td>
-                        <td class="py-3 px-2 text-right"><button onclick="deleteItem('expenses', ${i})" class="text-slate-300"><i class="fas fa-minus-circle"></i></button></td>
-                    </tr>
-                `;
-            }).join('');
-            document.getElementById('total-cost-display').innerText = `TWD ${total.toLocaleString()}`;
-        }
-
-        function deleteItem(type, i) { projectData[type].splice(i, 1); saveAndRender(); }
-        function clearAllData() { if(confirm("清空所有資料？")) { localStorage.removeItem('busan_travel_v4'); location.reload(); } }
+        globalGAData = validRows;
         
-        function exportAll() {
-            const blob = new Blob([JSON.stringify(projectData, null, 2)], {type: "application/json"});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = "busan_travel_full_data.json";
-            a.click();
-        }
+        document.getElementById('uploadStatus').style.color = "#4CAF50";
+        document.getElementById('uploadStatus').innerText = `✅ 讀取成功！共載入 ${globalGAData.length} 筆有效網頁資料。(總瀏覽量: ${globalTotalViews})`;
+    }
 
-        // 初始化
-        saveAndRender();
-    </script>
+    // 產生 Top 30 報表 (舊有功能)
+    function generateTop30() {
+        if (globalGAData.length === 0) { alert("請先上傳 GA 資料！"); return; }
+        
+        let top30 = globalGAData.slice(0, 30);
+        let tableHTML = `
+            <table id="reportTable">
+                <thead><tr><th>排行</th><th>日期</th><th>單位</th><th>新聞標題</th><th>瀏覽次數/佔比</th><th>停留時間</th></tr></thead>
+                <tbody>
+        `;
+
+        top30.forEach((item, index) => {
+            let percentage = ((item.views / globalTotalViews) * 100).toFixed(2);
+            tableHTML += `
+                <tr>
+                    <td>${index + 1}</td><td></td><td></td>
+                    <td class="title-col">${item.title}</td>
+                    <td>${item.views} (${percentage}%)</td>
+                    <td>${Math.round(item.time)} 秒</td>
+                </tr>
+            `;
+        });
+        tableHTML += `</tbody></table>`;
+        displayResult(tableHTML);
+    }
+
+    // 產生本週新聞比對報表 (全新功能！)
+    function generateWeeklyMatch() {
+        if (globalGAData.length === 0) { alert("請先上傳 GA 資料！"); return; }
+        
+        let newsInput = document.getElementById('newsList').value.trim();
+        if (newsInput === "") { alert("請先在文字框貼上你要比對的新聞標題！"); return; }
+
+        // 將輸入的文字依據換行符號切割成陣列
+        let searchTitles = newsInput.split('\n').map(t => t.trim()).filter(t => t !== "");
+
+        let tableHTML = `
+            <table id="reportTable">
+                <thead><tr><th>項次</th><th>日期</th><th>單位</th><th>新聞標題</th><th>瀏覽/佔比</th><th>流量排行</th><th>停留時間</th></tr></thead>
+                <tbody>
+        `;
+
+        searchTitles.forEach((searchTitle, index) => {
+            // 在 GA 資料中尋找標題相符的項目 (只要 GA 標題包含搜尋字串就算)
+            let match = globalGAData.find(ga => ga.title.includes(searchTitle) || searchTitle.includes(ga.title));
+            
+            let viewsText = "0 (0.00%)";
+            let rankText = "-";
+            let timeText = "0 秒";
+
+            if (match) {
+                let percentage = ((match.views / globalTotalViews) * 100).toFixed(2);
+                viewsText = `${match.views} (${percentage}%)`;
+                rankText = match.rank; // 抓取全站排名
+                timeText = `${Math.round(match.time)} 秒`;
+            }
+
+            tableHTML += `
+                <tr>
+                    <td>${index + 1}</td><td></td><td></td>
+                    <td class="title-col">${searchTitle}</td>
+                    <td>${viewsText}</td>
+                    <td>${rankText}</td>
+                    <td>${timeText}</td>
+                </tr>
+            `;
+        });
+
+        tableHTML += `</tbody></table>`;
+        displayResult(tableHTML);
+    }
+
+    function displayResult(html) {
+        document.getElementById('resultArea').innerHTML = html;
+        document.getElementById('copyBtn').style.display = 'block';
+    }
+
+    function copyTable() {
+        var table = document.getElementById("reportTable");
+        var range = document.createRange();
+        range.selectNode(table);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        try { document.execCommand('copy'); alert('表格已複製！'); } 
+        catch (err) { alert('複製失敗，請手動框選複製。'); }
+        window.getSelection().removeAllRanges();
+    }
+</script>
+
 </body>
 </html>
