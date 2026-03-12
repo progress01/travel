@@ -59,6 +59,9 @@
         .status-text { font-weight: bold; font-size: 13px; margin-top: 8px; display: block; }
         .hint-text { font-size: 13px; color: #64748b; margin-top: 5px; line-height: 1.5; }
         
+        /* ★ 格式提示專屬樣式 */
+        .format-hint { font-size: 12px; color: #d32f2f; background: #fee2e2; padding: 6px 10px; border-radius: 4px; display: inline-block; margin-top: 5px; font-weight: bold; border: 1px solid #fca5a5; }
+        
         .export-block { border: 2px solid #e2e8f0; border-radius: 8px; padding: 25px; margin-bottom: 30px; background-color: #fff; position: relative; }
         .export-block-title { font-size: 18px; font-weight: bold; color: #0f172a; margin-top: 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 20px; }
         
@@ -72,7 +75,6 @@
         .block-copy-btn { width: 100%; margin-top: 20px; font-size: 16px; padding: 12px; background-color: #334155; }
         .block-copy-btn:hover { background-color: #0f172a; }
 
-        /* 網站檢核三欄式卡片設計 */
         .inspect-compact-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
         .inspect-compact-row { background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; transition: 0.2s; align-self: start; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .inspect-compact-row:hover { border-color: #94a3b8; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -85,7 +87,6 @@
         .insp-block-delete { position: absolute; right: 10px; top: 10px; background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .insp-block-delete:hover { background: #dc2626; }
         
-        /* 網站清單彈窗設定 */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
         .modal-content { background: white; padding: 25px; border-radius: 8px; width: 500px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
     </style>
@@ -125,7 +126,7 @@
     <div id="MonthlyTool" class="tabcontent">
         <div class="tool-container">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin:0;">📅 單站月報自動生成 (含來源與網頁主題分類)</h2>
+                <h2 style="margin:0;">📅 單站月報自動生成</h2>
                 <button class="action-btn btn-clear" onclick="clearMonthlyWorkspace()">🗑️ 處理完畢，清空本頁</button>
             </div>
             
@@ -144,13 +145,13 @@
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
                 <div class="section" style="margin-bottom:0;">
                     <div class="section-title">📊 1. 上傳【網頁流量】</div>
+                    <div class="format-hint">必含：網頁標題、瀏覽、使用者、平均參與時間</div>
                     <input type="file" id="monthPageUpload" accept=".csv, .xlsx" />
                     <span id="monthPageStatus" class="status-text" style="color: #d32f2f;">尚未上傳</span>
                     
                     <details style="margin-top: 15px; font-size: 13px;">
                         <summary style="cursor: pointer; color: #0284c7; font-weight: bold; user-select: none;">⚙️ 設定網頁主題分類規則</summary>
-                        <p class="hint-text" style="margin-bottom:5px;">格式：<code>分類名稱 : 關鍵字1, 關鍵字2</code></p>
-                        <textarea id="pageRules" style="height: 100px; font-size: 12px;">
+                        <textarea id="pageRules" style="height: 100px; font-size: 12px; margin-top:5px;">
 系統與查詢 : 查詢, 系統, 資料庫, 登入, 專區
 政策與法規 : 辦法, 規定, 管制, 法規, 草案, 一覽表
 新聞與公告 : 新聞發布, 歷史訊息, 公告, 活動
@@ -162,19 +163,20 @@
 
                 <div class="section" style="margin-bottom:0;">
                     <div class="section-title">🔍 2. 上傳【站內搜尋】</div>
+                    <div class="format-hint">必含：搜尋字詞、搜尋次數、總人數</div>
                     <input type="file" id="monthSearchUpload" accept=".csv, .xlsx" />
                     <span id="monthSearchStatus" class="status-text" style="color: #d32f2f;">尚未上傳</span>
                 </div>
 
                 <div class="section" style="margin-bottom:0;">
                     <div class="section-title">🌍 3. 上傳【來源管道】</div>
+                    <div class="format-hint">必含：來源(最初招攬...)、瀏覽、總人數</div>
                     <input type="file" id="monthSourceUpload" accept=".csv, .xlsx" />
                     <span id="monthSourceStatus" class="status-text" style="color: #d32f2f;">尚未上傳</span>
                     
                     <details style="margin-top: 15px; font-size: 13px;">
                         <summary style="cursor: pointer; color: #0284c7; font-weight: bold; user-select: none;">⚙️ 設定來源分類規則</summary>
-                        <p class="hint-text" style="margin-bottom:5px;">格式：<code>來源類型, 網站類型 : 網址關鍵字</code></p>
-                        <textarea id="sourceRules" style="height: 100px; font-size: 12px;">
+                        <textarea id="sourceRules" style="height: 100px; font-size: 12px; margin-top:5px;">
 (direct), - : (direct)
 Organic Search, 搜尋引擎 : google, bing, yahoo
 Referral, 台大 : ntu.edu.tw, npust.edu.tw
@@ -189,21 +191,24 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
             </div>
 
             <div class="section" style="border: 2px dashed #0ea5e9; background-color: #f0f9ff; margin-top:20px;">
-                <div class="section-title" style="color: #0284c7;">📈 4. 日流量對齊引擎 (提供給 Excel 畫圖使用)</div>
+                <div class="section-title" style="color: #0284c7;">📈 4. 日流量對齊引擎 (供 Excel 畫圖用)</div>
+                <div class="format-hint" style="margin-bottom: 10px;">必含：日期 (或 Date/日)、瀏覽</div>
                 <div style="display: flex; gap: 20px; margin-bottom: 10px;">
-                    <div style="flex: 1;">
-                        <input type="file" id="trendCurUpload" accept=".csv, .xlsx" style="margin-top:0;" />
+                    <div style="flex: 1; border: 1px solid #cbd5e1; padding: 10px; background: white; border-radius: 4px;">
+                        <label style="color:#0f172a;">📥 上傳【本月】每日流量：</label>
+                        <input type="file" id="trendCurUpload" accept=".csv, .xlsx" style="margin-top:5px;" />
                         <span id="trendCurStatus" class="status-text" style="color: #d32f2f; font-size: 12px; margin-top:2px;">尚未上傳</span>
                         <div style="margin-top: 10px; display: flex; align-items: center; gap: 10px;">
-                            <label>📅 本月首個星期日是幾號？</label>
+                            <label style="font-size:13px;">📅 本月首個星期日是幾號？</label>
                             <input type="number" id="trendCurSun" value="4" min="1" max="7" style="width: 60px; margin: 0; padding:4px;">
                         </div>
                     </div>
-                    <div style="flex: 1;">
-                        <input type="file" id="trendPrevUpload" accept=".csv, .xlsx" style="margin-top:0;" />
+                    <div style="flex: 1; border: 1px solid #cbd5e1; padding: 10px; background: white; border-radius: 4px;">
+                        <label style="color:#0f172a;">📥 上傳【前月】每日流量：</label>
+                        <input type="file" id="trendPrevUpload" accept=".csv, .xlsx" style="margin-top:5px;" />
                         <span id="trendPrevStatus" class="status-text" style="color: #d32f2f; font-size: 12px; margin-top:2px;">尚未上傳</span>
                         <div style="margin-top: 10px; display: flex; align-items: center; gap: 10px;">
-                            <label>📅 前月首個星期日是幾號？</label>
+                            <label style="font-size:13px;">📅 前月首個星期日是幾號？</label>
                             <input type="number" id="trendPrevSun" value="7" min="1" max="7" style="width: 60px; margin: 0; padding:4px;">
                         </div>
                     </div>
@@ -224,16 +229,11 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
             <button class="action-btn btn-primary btn-full" onclick="generateMonthlyReport()">✨ 5. 產出本站圖文組合包</button>
 
             <div id="monthlyOutputArea" style="display: none; margin-top: 40px;">
-                <p class="hint-text" style="color:#0284c7; font-weight:bold; font-size:14px; margin-bottom:20px;">💡 小秘訣：產出的表格中的「分類」都可以點擊下拉選單手動修改！複製時系統會自動幫您轉換成純文字！</p>
-
                 <div class="export-block" id="blockPageExport">
                     <h3 class="export-block-title">📊 網頁流量分析</h3>
                     <div id="monthlyPageDraft" class="report-draft" contenteditable="true"></div>
-                    <div>
-                        <button class="action-btn btn-ai" onclick="copyDivContent('monthlyPageDraft')">📋 僅複製 AI 提示詞</button>
-                        <button class="action-btn btn-blue" onclick="execCopyWithFormControls(document.getElementById('monthPageTable'))">📋 僅複製表格</button>
-                    </div>
-                    <div class="paste-zone" contenteditable="true" data-placeholder="🧲 若您已在 Excel 畫好日流量折線圖，請點擊此處按 Ctrl+V 貼上截圖..."></div>
+                    <div><button class="action-btn btn-ai" onclick="copyDivContent('monthlyPageDraft')">📋 僅複製 AI 提示詞</button><button class="action-btn btn-blue" onclick="execCopyWithFormControls(document.getElementById('monthPageTable'))">📋 僅複製表格</button></div>
+                    <div class="paste-zone" contenteditable="true" data-placeholder="🧲 若有日流量折線圖，請點擊此處按 Ctrl+V 貼上..."></div>
                     <div class="img-caption" id="captionPage1" contenteditable="true">圖：熱門單元排行</div>
                     <div id="monthlyPageTableArea"></div>
                     <button class="action-btn block-copy-btn" onclick="execCopyWithFormControls(document.getElementById('blockPageExport'), '📦 流量區塊已打包複製！')">📦 一鍵打包複製：草稿 ＋ 截圖 ＋ 表格</button>
@@ -242,10 +242,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 <div class="export-block" id="blockSearchExport">
                     <h3 class="export-block-title">🔍 站內搜尋分析</h3>
                     <div id="monthlySearchDraft" class="report-draft" contenteditable="true"></div>
-                    <div>
-                        <button class="action-btn btn-ai" onclick="copyDivContent('monthlySearchDraft')">📋 僅複製 AI 提示詞</button>
-                        <button class="action-btn btn-blue" onclick="execCopyWithFormControls(document.getElementById('monthSearchTable'))">📋 僅複製表格</button>
-                    </div>
+                    <div><button class="action-btn btn-ai" onclick="copyDivContent('monthlySearchDraft')">📋 僅複製 AI 提示詞</button><button class="action-btn btn-blue" onclick="execCopyWithFormControls(document.getElementById('monthSearchTable'))">📋 僅複製表格</button></div>
                     <div class="paste-zone" contenteditable="true" data-placeholder="🧲 點擊此處，按 Ctrl+V 貼上【站內搜尋】截圖..."></div>
                     <div class="img-caption" id="captionSearch1" contenteditable="true">圖：搜尋關鍵字統計</div>
                     <div id="monthlySearchTableArea"></div>
@@ -255,10 +252,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 <div class="export-block" id="blockSourceExport">
                     <h3 class="export-block-title">🌍 來源管道分析</h3>
                     <div id="monthlySourceDraft" class="report-draft" contenteditable="true"></div>
-                    <div>
-                        <button class="action-btn btn-ai" onclick="copyDivContent('monthlySourceDraft')">📋 僅複製 AI 提示詞</button>
-                        <button class="action-btn btn-blue" onclick="execCopyWithFormControls(document.getElementById('monthSourceTable'))">📋 僅複製表格</button>
-                    </div>
+                    <div><button class="action-btn btn-ai" onclick="copyDivContent('monthlySourceDraft')">📋 僅複製 AI 提示詞</button><button class="action-btn btn-blue" onclick="execCopyWithFormControls(document.getElementById('monthSourceTable'))">📋 僅複製表格</button></div>
                     <div class="paste-zone" contenteditable="true" data-placeholder="🧲 點擊此處，按 Ctrl+V 貼上【來源管道】相關圓餅圖..."></div>
                     <div class="img-caption" contenteditable="true">圖：使用者從哪裡來</div>
                     <div id="monthlySourceTableArea"></div>
@@ -273,7 +267,8 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
             <h2 style="margin-top:0;">📊 單發週報比對工具</h2>
             <div class="section">
                 <div class="section-title">上傳 GA 資料與設定</div>
-                <label>排除網頁標題關鍵字：</label>
+                <div class="format-hint">必備欄位：網頁標題、瀏覽、平均參與時間</div>
+                <br><br><label>排除網頁標題關鍵字：</label>
                 <input type="text" id="gaExcludeKeywords" value="首頁, 網站導覽, 找不到網頁, Page Not Found">
                 <input type="file" id="gaFileUpload" accept=".csv, .xlsx" />
                 <span id="gaUploadStatus" class="status-text" style="color: #d32f2f;">尚未上傳資料</span>
@@ -307,6 +302,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
             </div>
             <div class="section">
                 <div class="section-title">上傳搜尋字詞資料</div>
+                <div class="format-hint">必備欄位：搜尋字詞、搜尋次數</div><br>
                 <input type="file" id="searchFileUpload" accept=".csv, .xlsx" />
                 <span id="searchUploadStatus" class="status-text" style="color: #d32f2f;">尚未上傳資料</span>
             </div>
@@ -327,7 +323,8 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
             </div>
             <div class="section">
                 <div class="section-title">步驟二：上傳原始資料</div>
-                <p class="hint-text">請上傳效能檢測 Excel 檔。系統會自動將沒有名字的「電腦版」向上對齊配對。</p>
+                <div class="format-hint" style="margin-bottom:10px;">⚠️ 必備欄位：網站、設備 (需填寫電腦/行動)、效能、無障礙、最佳做法、SEO</div>
+                <p class="hint-text">系統會自動將沒有名字的「電腦版」向上對齊配對，並忽略報表前方的空白列。</p>
                 <input type="file" id="speedFileUpload" accept=".csv, .xlsx" />
                 <span id="speedUploadStatus" class="status-text" style="color: #d32f2f;">尚未上傳</span>
             </div>
@@ -366,7 +363,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
             </div>
             <div class="section">
                 <div class="section-title">步驟二：上傳原始資料</div>
-                <p class="hint-text">請上傳包含「網站」、「無效連結」、「來源網頁」、「文字」的 Excel 檔。</p>
+                <div class="format-hint" style="margin-bottom:10px;">⚠️ 必備欄位：網站、無效連結、來源網頁、文字</div>
                 <input type="file" id="linkFileUpload" accept=".csv, .xlsx" />
                 <span id="linkUploadStatus" class="status-text" style="color: #d32f2f;">尚未上傳</span>
             </div>
@@ -390,18 +387,9 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 <button class="action-btn btn-clear" onclick="resetInspectForm()">🗑️ 重置表單</button>
             </div>
             <div class="section" style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 250px;">
-                    <label>網站名稱：</label>
-                    <select id="inspectSiteDropdown"></select>
-                </div>
-                <div style="flex: 1; min-width: 200px;">
-                    <label>巡檢日期：</label>
-                    <input type="text" id="inspectDate" value="2026/ 01/ 23">
-                </div>
-                <div style="flex: 2; min-width: 300px;">
-                    <label>瀏覽器版本：</label>
-                    <input type="text" id="inspectBrowser" value="Chrome 120.0 (64 位元) / Edge 120.0">
-                </div>
+                <div style="flex: 1; min-width: 250px;"><label>網站名稱：</label><select id="inspectSiteDropdown"></select></div>
+                <div style="flex: 1; min-width: 200px;"><label>巡檢日期：</label><input type="text" id="inspectDate" value="2026/ 01/ 23"></div>
+                <div style="flex: 2; min-width: 300px;"><label>瀏覽器版本：</label><input type="text" id="inspectBrowser" value="Chrome 120.0 (64 位元) / Edge 120.0"></div>
             </div>
             <div class="section" style="padding: 20px; background: transparent; border: none;">
                 <div class="section-title" style="border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">📝 檢核項目評分區</div>
@@ -413,10 +401,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 <div class="export-block" id="blockInspectExport">
                     <h3 class="export-block-title">📄 網站檢核評分表 (附件)</h3>
                     <div style="font-family: '微軟正黑體', sans-serif; font-size: 15px; line-height: 1.8; margin-bottom: 20px; color: #333;" contenteditable="true">
-                        <span style="font-weight: bold; font-size: 18px;">網站檢核評分表 附件4</span><br>
-                        <b>網站名稱：</b> <span id="outInspSite"></span><br>
-                        <b>巡檢日期：</b> <span id="outInspDate"></span><br>
-                        <b>瀏覽器版本：</b> <span id="outInspBrowser"></span>
+                        <span style="font-weight: bold; font-size: 18px;">網站檢核評分表 附件4</span><br><b>網站名稱：</b> <span id="outInspSite"></span><br><b>巡檢日期：</b> <span id="outInspDate"></span><br><b>瀏覽器版本：</b> <span id="outInspBrowser"></span>
                     </div>
                     <div id="inspectTablesArea"></div>
                     <button class="action-btn block-copy-btn" onclick="execCopyWithFormControls(document.getElementById('blockInspectExport'))">📦 一鍵打包複製所有表格</button>
@@ -544,7 +529,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
         return htmlString.replace(/<td/g, '<td contenteditable="true"'); 
     }
 
-    // ★ 抗 GA4 垃圾列解析器
+    // ★ 抗 GA4 垃圾列與無效標題解析器
     function parseRobustData(resultBuffer) {
         let wb = XLSX.read(new Uint8Array(resultBuffer), {type: 'array'});
         let sheet = wb.Sheets[wb.SheetNames[0]];
@@ -561,7 +546,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                str.includes("日期") || str.includes("date") || str.includes("day") || str.includes("日") ||
                str.includes("瀏覽") || str.includes("views") ||
                str.includes("標題") || str.includes("title") || 
-               str.includes("網站")) {
+               str.includes("網站") || str.includes("無效連結")) {
                 hIdx = i; 
                 break;
             }
@@ -864,6 +849,12 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 monthPageData.forEach(r => { monthPageTotals.views += r.views; monthPageTotals.users += r.users; }); 
             } 
             
+            if(monthPageData.length === 0) {
+                document.getElementById('monthPageStatus').style.color = "#d32f2f"; 
+                document.getElementById('monthPageStatus').innerText = `⚠️ 讀取失敗，請確認欄位`; 
+                return;
+            }
+
             monthPageData.sort((a, b) => b.views - a.views); 
             document.getElementById('monthPageStatus').style.color = "#10b981"; 
             document.getElementById('monthPageStatus').innerText = `✅ 讀取成功 (${monthPageData.length} 筆)`; 
@@ -899,6 +890,12 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 monthSearchData.forEach(r => monthSearchTotals.searches += r.count); 
             } 
             
+            if(monthSearchData.length === 0) {
+                document.getElementById('monthSearchStatus').style.color = "#d32f2f"; 
+                document.getElementById('monthSearchStatus').innerText = `⚠️ 讀取失敗，請確認欄位`; 
+                return;
+            }
+
             monthSearchData.sort((a, b) => b.count - a.count); 
             document.getElementById('monthSearchStatus').style.color = "#10b981"; 
             document.getElementById('monthSearchStatus').innerText = `✅ 讀取成功 (${monthSearchData.length} 筆)`; 
@@ -939,6 +936,12 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 monthSourceData.forEach(r => { monthSourceTotals.views += r.views; monthSourceTotals.users += r.users; }); 
             } 
             
+            if(monthSourceData.length === 0) {
+                document.getElementById('monthSourceStatus').style.color = "#d32f2f"; 
+                document.getElementById('monthSourceStatus').innerText = `⚠️ 讀取失敗，請確認欄位`; 
+                return;
+            }
+
             monthSourceData.sort((a, b) => b.views - a.views); 
             document.getElementById('monthSourceStatus').style.color = "#10b981"; 
             document.getElementById('monthSourceStatus').innerText = `✅ 讀取成功 (${monthSourceData.length} 筆)`; 
@@ -1011,8 +1014,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
 
             document.getElementById('sourceRules').value.split('\n').forEach(line => { 
                 if(line.includes(':') || line.includes('：')) { 
-                    let parts = line.split(/[:：]/); 
-                    let types = parts[0].split(','); 
+                    let parts = line.split(/[:：]/); let types = parts[0].split(','); 
                     if (types.length >= 2) { 
                         let st = types[0].trim(); let wt = types[1].trim();
                         rules.push({ sourceType: st, siteType: wt, keywords: parts[1].split(/[,，、]/).map(k => k.trim().toLowerCase()).filter(k => k !== "") }); 
@@ -1067,6 +1069,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
     
     document.getElementById('gaFileUpload').addEventListener('change', function(e) {
         if (e.target.files.length === 0) return; 
+        document.getElementById('gaUploadStatus').innerText = "讀取中...";
         let reader = new FileReader(); 
         reader.onload = function(evt) {
             let json = parseRobustData(evt.target.result);
@@ -1084,6 +1087,12 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 } 
             });
             
+            if(validRows.length === 0) {
+                document.getElementById('gaUploadStatus').style.color = "#d32f2f"; 
+                document.getElementById('gaUploadStatus').innerText = `⚠️ 讀取失敗，請確認欄位`; 
+                return;
+            }
+
             validRows.sort((a, b) => b.views - a.views); 
             validRows.forEach((item, index) => { item.rank = index + 1; }); 
             globalGAData = validRows; 
@@ -1132,6 +1141,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
        ========================================= */
     document.getElementById('searchFileUpload').addEventListener('change', function(e) {
         if (e.target.files.length === 0) return; 
+        document.getElementById('searchUploadStatus').innerText = "解析中...";
         let reader = new FileReader(); 
         reader.onload = function(evt) {
             let data = parseRobustData(evt.target.result);
@@ -1143,9 +1153,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 } 
             });
             
-            let results = {}; 
-            let totalSearchVolume = 0;
-            
+            let results = {}; let totalSearchVolume = 0;
             data.forEach(row => { 
                 let termOriginal = String(row["搜尋字詞"] || row["Search term"] || "").trim(); 
                 let count = parseSafeNumber(row["搜尋次數"] || row["Event count"] || row["Views"]); 
@@ -1171,6 +1179,13 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
             });
             
             let resultArr = Object.keys(results).map(key => ({ categoryName: key, totalCount: results[key].totalCount, termsObj: results[key].terms }));
+            
+            if(resultArr.length === 0) {
+                document.getElementById('searchUploadStatus').style.color = "#d32f2f"; 
+                document.getElementById('searchUploadStatus').innerText = `⚠️ 讀取失敗，請確認欄位`; 
+                return;
+            }
+
             resultArr.sort((a, b) => { 
                 if (a.categoryName === "其他/未分類") return 1; 
                 if (b.categoryName === "其他/未分類") return -1; 
@@ -1210,7 +1225,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
         document.getElementById('speedUploadStatus').innerText = "解析中..."; 
         let reader = new FileReader(); 
         reader.onload = function(evt) { 
-            let jsonData = XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(evt.target.result), {type: 'array'}).Sheets[XLSX.read(new Uint8Array(evt.target.result), {type: 'array'}).SheetNames[0]], {defval: ""}); 
+            let jsonData = parseRobustData(evt.target.result);
             speedDesktopData = []; 
             speedMobileData = []; 
             let currentSite = ""; 
@@ -1233,6 +1248,13 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 } 
             }); 
             
+            if(speedDesktopData.length === 0 && speedMobileData.length === 0) {
+                alert("⚠️ 讀取失敗！找不到對應的資料。\n請確認您的 Excel 標題列是否包含：\n【網站】、【設備】、【效能】、【無障礙】、【最佳做法】、【SEO】");
+                document.getElementById('speedUploadStatus').style.color = "#d32f2f"; 
+                document.getElementById('speedUploadStatus').innerText = "讀取失敗，請確認欄位"; 
+                return;
+            }
+
             document.getElementById('speedUploadStatus').style.color = "#10b981"; 
             document.getElementById('speedUploadStatus').innerText = `✅ 完成！電腦版 ${speedDesktopData.length} 筆，行動版 ${speedMobileData.length} 筆。`; 
             e.target.value = ''; 
@@ -1314,27 +1336,33 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
         document.getElementById('linkUploadStatus').innerText = "解析中..."; 
         let reader = new FileReader(); 
         reader.onload = function(evt) { 
-            let json = XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(evt.target.result), {type: 'array'}).Sheets[XLSX.read(new Uint8Array(evt.target.result), {type: 'array'}).SheetNames[0]], {defval: ""}); 
+            let json = parseRobustData(evt.target.result);
             let dateStr = document.getElementById('linkDateText').value.trim(); 
             let totalSites = siteNames.length; 
             let resultText = ""; 
             let count = 1; 
             
-            json.forEach(row => { 
-                let src = String(row["來源網頁"] || "").trim(); 
-                let txt = String(row["文字"] || "").trim(); 
-                if (src !== "") { resultText += `${count}.網頁(${src})連結文字[${txt}]有連線問題\n`; count++; } 
-            }); 
-            document.getElementById('linkResultArea').value = resultText || "本次檢測無發現任何無效連結。"; 
-            
             let siteDataMap = {}; 
+            
             json.forEach(row => { 
-                let site = String(row["網站"] || row["網站名稱"] || "").trim(); 
+                let srcKey = Object.keys(row).find(k => k.includes("來源"));
+                let txtKey = Object.keys(row).find(k => k.includes("文字"));
+                let linkKey = Object.keys(row).find(k => k.includes("無效連結"));
+                let siteKey = Object.keys(row).find(k => k.includes("網站"));
+                
+                let src = String(row[srcKey] || "").trim(); 
+                let txt = String(row[txtKey] || "").trim(); 
+                let site = String(row[siteKey] || "").trim();
+                let badLink = String(row[linkKey] || "").trim();
+                
+                if (src !== "") { resultText += `${count}.網頁(${src})連結文字[${txt}]有連線問題\n`; count++; } 
                 if (site !== "") { 
                     if (!siteDataMap[site]) siteDataMap[site] = []; 
-                    siteDataMap[site].push(row); 
+                    siteDataMap[site].push({ "無效連結": badLink, "來源網頁": src }); 
                 } 
             }); 
+            
+            document.getElementById('linkResultArea').value = resultText || "本次檢測無發現任何無效連結。"; 
             
             let attachmentsHTML = ""; 
             let tableCounter = 1; 
@@ -1358,9 +1386,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                     tableStr += `<tr><td contenteditable="true">1</td><td class="text-left" contenteditable="true">無</td><td class="text-left" contenteditable="true">無</td><td contenteditable="true">無</td><td class="text-left" contenteditable="true">無</td><td contenteditable="true">-</td><td contenteditable="true">-</td></tr>`; 
                 } else { 
                     sData.forEach((row, i) => { 
-                        let badLink = String(row["無效連結"] || "").trim(); 
-                        let srcLink = String(row["來源網頁"] || "").trim(); 
-                        tableStr += `<tr><td contenteditable="true">${i + 1}</td><td class="text-left" style="word-break: break-all; max-width: 250px;" contenteditable="true">${badLink}</td><td class="text-left" style="word-break: break-all; max-width: 250px;" contenteditable="true">${srcLink}</td><td contenteditable="true">無效連結</td><td class="text-left" contenteditable="true"></td><td contenteditable="true">待確認</td><td contenteditable="true">待處理</td></tr>`; 
+                        tableStr += `<tr><td contenteditable="true">${i + 1}</td><td class="text-left" style="word-break: break-all; max-width: 250px;" contenteditable="true">${row["無效連結"]}</td><td class="text-left" style="word-break: break-all; max-width: 250px;" contenteditable="true">${row["來源網頁"]}</td><td contenteditable="true">無效連結</td><td class="text-left" contenteditable="true"></td><td contenteditable="true">待確認</td><td contenteditable="true">待處理</td></tr>`; 
                     }); 
                 } 
                 tableStr += `</tbody></table>`; 
@@ -1470,18 +1496,14 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
         document.getElementById('outInspDate').innerText = date; 
         document.getElementById('outInspBrowser').innerText = browser; 
         
-        let tablesHTML = ""; 
-        let totalScore = 0; 
-        let totalBonus = 0; 
+        let tablesHTML = ""; let totalScore = 0; let totalBonus = 0; 
         
         inspectItems.forEach(item => { 
             let score = parseFloat(document.getElementById(`insp-score-${item.id}`).value) || 0; 
             if(item.isBonus) totalBonus += score; else totalScore += score; 
             
             let blocks = document.getElementById(`insp-blocks-${item.id}`).querySelectorAll('.insp-block'); 
-            let descOutput = ""; 
-            let imgOutput = ""; 
-            let validBlocks = []; 
+            let descOutput = ""; let imgOutput = ""; let validBlocks = []; 
             
             blocks.forEach(block => { 
                 let descText = block.querySelector('.insp-desc').value.trim(); 
@@ -1492,8 +1514,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
             }); 
             
             if (validBlocks.length === 1) { 
-                descOutput = validBlocks[0].desc; 
-                imgOutput = validBlocks[0].img; 
+                descOutput = validBlocks[0].desc; imgOutput = validBlocks[0].img; 
             } else if (validBlocks.length > 1) { 
                 validBlocks.forEach((vb, idx) => { 
                     descOutput += `<div style="margin-bottom: 15px;"><b>${idx + 1}.</b> ${vb.desc}</div>`; 
@@ -1536,10 +1557,27 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
         let reader = new FileReader(); 
         
         reader.onload = function(evt) { 
-            let json = XLSX.utils.sheet_to_json(XLSX.read(new Uint8Array(evt.target.result), {type: 'array'}).Sheets[XLSX.read(new Uint8Array(evt.target.result), {type: 'array'}).SheetNames[0]], {header: 1}); 
-            let validRows = json.filter(row => row.length >= 2 && row[0] != null && row[1] != null && row[1] !== ""); 
-            if (validRows.length > 0 && isNaN(parseSafeNumber(validRows[0][1]))) validRows.shift(); 
-            let wordFreqList = validRows.map(r => [String(r[0]).trim(), parseSafeNumber(r[1])]).filter(r => r[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 400); 
+            let json = parseRobustData(evt.target.result);
+            
+            // 轉換回二維陣列給 WordCloud 吃
+            let validRows = [];
+            json.forEach(row => {
+                let keys = Object.keys(row);
+                if(keys.length >= 2) {
+                    let word = String(row[keys[0]]).trim();
+                    let weight = parseSafeNumber(row[keys[1]]);
+                    if(word !== "" && !isNaN(weight) && weight > 0) validRows.push([word, weight]);
+                }
+            });
+            
+            validRows.sort((a, b) => b[1] - a[1]);
+            let wordFreqList = validRows.slice(0, 400); 
+            
+            if(wordFreqList.length === 0) {
+                document.getElementById('wcStatusMsg').style.color = "#d32f2f"; 
+                document.getElementById('wcStatusMsg').innerText = "⚠️ 讀取失敗，請確認欄位"; 
+                return;
+            }
             
             document.getElementById('wcCanvasContainer').style.display = 'block'; 
             WordCloud(document.getElementById('wordCloudCanvas'), { 
