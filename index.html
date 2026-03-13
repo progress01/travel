@@ -426,23 +426,54 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
         </div>
     </div>
 
-    <div id="NewTableTool" class="tabcontent">
+<div id="NewTableTool" class="tabcontent">
         <div class="tool-container">
-            <h2 style="margin-top:0;">🌟 GA4流量使用工具</h2>
             
-            <div class="section">
-                <div class="section-title">步驟一：上傳資料</div>
-                <div class="format-hint">必備欄位：欄位A、欄位B</div><br>
-                <input type="file" id="newToolUpload" accept=".csv, .xlsx" />
-                <span id="newToolStatus" class="status-text" style="color: #d32f2f;">尚未上傳</span>
+            <div style="margin-bottom: 40px; padding-bottom: 30px; border-bottom: 2px dashed #cbd5e1;">
+                <h2 style="margin-top:0;">🌟 GA4流量使用工具 (原功能)</h2>
+                <div class="section">
+                    <div class="section-title">步驟一：上傳資料</div>
+                    <div class="format-hint">必備欄位：您的欄位A、您的欄位B</div><br>
+                    <input type="file" id="newToolUpload" accept=".csv, .xlsx" />
+                    <span id="newToolStatus" class="status-text" style="color: #d32f2f;">尚未上傳</span>
+                </div>
+
+                <button class="action-btn btn-primary" onclick="processNewTable()">⚡ 產生報表</button>
+
+                <div class="export-block" id="blockNewToolExport" style="display:none; margin-top:20px;">
+                    <h3 class="export-block-title">📊 產出結果</h3>
+                    <div id="newToolResultArea"></div>
+                </div>
             </div>
 
-            <button class="action-btn btn-primary" onclick="processNewTable()">⚡ 產生報表</button>
+            <div>
+                <h2 style="margin-top:0; color: #0284c7;">🎯 GA4 網頁戰略走位診斷 (雙表合併進階版)</h2>
+                <div class="section" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 300px;">
+                        <div class="section-title">📥 1. 上傳【參與 > 網頁和螢幕】</div>
+                        <div class="format-hint">必備：網頁路徑與畫面類別、每位活躍使用者的平均參與時間</div>
+                        <input type="file" id="ga4PagesUpload" accept=".csv, .xlsx" style="margin-top:10px;"/>
+                        <span id="ga4PagesStatus" class="status-text" style="color: #d32f2f;">尚未上傳</span>
+                    </div>
+                    <div style="flex: 1; min-width: 300px;">
+                        <div class="section-title">📥 2. 上傳【到達網頁】</div>
+                        <div class="format-hint">必備：到達網頁、工作階段、平均單次工作階段參與時間、發生率</div>
+                        <input type="file" id="ga4LandingUpload" accept=".csv, .xlsx" style="margin-top:10px;"/>
+                        <span id="ga4LandingStatus" class="status-text" style="color: #d32f2f;">尚未上傳</span>
+                    </div>
+                </div>
 
-            <div class="export-block" id="blockNewToolExport" style="display:none; margin-top:20px;">
-                <h3 class="export-block-title">📊 產出結果</h3>
-                <div id="newToolResultArea"></div>
+                <button class="action-btn btn-primary btn-full" style="font-size: 16px; padding: 12px; background-color: #0284c7;" onclick="processGA4Strategy()">⚡ 產生自動化戰略診斷報表</button>
+
+                <div class="export-block" id="blockGA4StrategyExport" style="display:none; margin-top:30px; border-color: #0284c7;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 class="export-block-title" style="margin: 0; border: none; padding: 0;">📊 戰略走位體檢結果</h3>
+                        <button class="action-btn btn-blue" onclick="execCopyWithFormControls(document.getElementById('ga4StrategyTable'), '✅ 表格已複製！請至 Excel 貼上。')">📋 複製表格至 Excel</button>
+                    </div>
+                    <div id="ga4StrategyResultArea" style="max-height: 500px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 4px;"></div>
+                </div>
             </div>
+
         </div>
     </div>
 
@@ -1626,12 +1657,13 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
         link.click(); 
     }
 
-    /* =========================================
-       模組 H：GA4流量使用 
+   /* =========================================
+       模組 H：GA4流量使用 (原功能 + 雙表診斷)
        ========================================= */
-    let newToolData = []; // 用來存你的新資料
+       
+    // ================== 原本的功能 ==================
+    let newToolData = []; 
 
-    // 1. 監聽檔案上傳
     document.getElementById('newToolUpload').addEventListener('change', function(e) { 
         if (e.target.files.length === 0) return; 
         document.getElementById('newToolStatus').innerText = "讀取中..."; 
@@ -1639,9 +1671,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
         
         reader.onload = function(evt) { 
             let json = parseRobustData(evt.target.result); 
-            
             newToolData = json; 
-
             document.getElementById('newToolStatus').style.color = "#10b981"; 
             document.getElementById('newToolStatus').innerText = `✅ 完成！共讀取 ${newToolData.length} 筆資料。`; 
             e.target.value = ''; 
@@ -1649,7 +1679,6 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
         reader.readAsArrayBuffer(e.target.files[0]); 
     });
 
-    // 2. 處理資料並畫出表格的函數
     function processNewTable() {
         if (newToolData.length === 0) {
             alert("請先上傳資料！"); return;
@@ -1666,6 +1695,164 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
         
         document.getElementById('newToolResultArea').innerHTML = tableHTML; 
         document.getElementById('blockNewToolExport').style.display = 'block'; 
+    }
+
+
+    // ================== 新增的功能：網頁戰略走位診斷 ==================
+    let ga4PagesData = [];
+    let ga4LandingData = [];
+
+    // 計算 Z-Score 的數學輔助函數
+    function calculateZScores(arr) {
+        if (arr.length === 0) return [];
+        let mean = arr.reduce((a, b) => a + b, 0) / arr.length;
+        let variance = arr.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / arr.length;
+        let stdDev = Math.sqrt(variance);
+        if (stdDev === 0) return arr.map(() => 0); // 避免除以零
+        return arr.map(x => (x - mean) / stdDev);
+    }
+
+    // 監聽【網頁參與】上傳
+    document.getElementById('ga4PagesUpload').addEventListener('change', function(e) { 
+        if (e.target.files.length === 0) return; 
+        document.getElementById('ga4PagesStatus').innerText = "讀取中..."; 
+        let reader = new FileReader(); 
+        reader.onload = function(evt) { 
+            ga4PagesData = parseRobustData(evt.target.result); 
+            document.getElementById('ga4PagesStatus').style.color = "#10b981"; 
+            document.getElementById('ga4PagesStatus').innerText = `✅ 完成！(${ga4PagesData.length} 筆)`; 
+            e.target.value = ''; 
+        }; 
+        reader.readAsArrayBuffer(e.target.files[0]); 
+    });
+
+    // 監聽【到達網頁】上傳
+    document.getElementById('ga4LandingUpload').addEventListener('change', function(e) { 
+        if (e.target.files.length === 0) return; 
+        document.getElementById('ga4LandingStatus').innerText = "讀取中..."; 
+        let reader = new FileReader(); 
+        reader.onload = function(evt) { 
+            ga4LandingData = parseRobustData(evt.target.result); 
+            document.getElementById('ga4LandingStatus').style.color = "#10b981"; 
+            document.getElementById('ga4LandingStatus').innerText = `✅ 完成！(${ga4LandingData.length} 筆)`; 
+            e.target.value = ''; 
+        }; 
+        reader.readAsArrayBuffer(e.target.files[0]); 
+    });
+
+    // 核心處理與合併邏輯
+    function processGA4Strategy() {
+        if (ga4PagesData.length === 0 || ga4LandingData.length === 0) {
+            alert("⚠️ 請先上傳【網頁參與】與【到達網頁】兩份 Excel/CSV 檔案！");
+            return;
+        }
+
+        // 步驟 A：把「網頁參與」轉換成容易搜尋的 Map (查找表)
+        let pagesMap = {};
+        ga4PagesData.forEach(row => {
+            let pathKey = Object.keys(row).find(k => k.includes("網頁路徑") || k.includes("Page path"));
+            let timeKey = Object.keys(row).find(k => k.includes("每位活躍使用者的平均參與時間") || k.includes("Average engagement time") || k.includes("平均參與時間"));
+            
+            if(pathKey && timeKey) {
+                let path = String(row[pathKey]).trim();
+                pagesMap[path] = parseSafeNumber(row[timeKey]);
+            }
+        });
+
+        // 步驟 B：遍歷「到達網頁」，進行 Inner Join 合併
+        let mergedData = [];
+        ga4LandingData.forEach(row => {
+            let landingKey = Object.keys(row).find(k => k.includes("到達網頁") || k.includes("Landing page"));
+            let sessionKey = Object.keys(row).find(k => k.includes("工作階段") || k.includes("Sessions"));
+            let avgTimeKey = Object.keys(row).find(k => k.includes("平均單次工作階段參與時間") || k.includes("Average session engagement time"));
+            let cvrKey = Object.keys(row).find(k => k.includes("發生率") || k.includes("轉換率") || k.includes("Session key event rate") || k.includes("重要事件發生率"));
+
+            if(landingKey && sessionKey && avgTimeKey && cvrKey) {
+                let path = String(row[landingKey]).trim();
+                // 排除無效網址
+                if (path !== "(not set)" && path !== "") {
+                    let pageTime = pagesMap[path]; 
+                    // 如果在另一張表也有找到這個網址 (Inner Join 成功)
+                    if (pageTime !== undefined) {
+                        let sessions = parseSafeNumber(row[sessionKey]);
+                        // 防呆機制：過濾掉流量太低的雜訊 (例如工作階段小於 10 的長尾網頁)
+                        if(sessions >= 10) {
+                            mergedData.push({
+                                path: path,
+                                sessions: sessions,
+                                cvr: parseSafeNumber(row[cvrKey]),
+                                landingAvgTime: parseSafeNumber(row[avgTimeKey]),
+                                pageAvgTime: pageTime
+                            });
+                        }
+                    }
+                }
+            }
+        });
+
+        if(mergedData.length === 0) {
+            alert("⚠️ 錯誤：無法合併資料。請確保兩份報表的維度皆包含網址路徑，或欄位名稱正確。");
+            return;
+        }
+
+        // 步驟 C：計算所有網頁的標準差 (Z-Score)
+        let sessionsArr = mergedData.map(d => d.sessions);
+        let cvrArr = mergedData.map(d => d.cvr);
+        let sessionsZ = calculateZScores(sessionsArr);
+        let cvrZ = calculateZScores(cvrArr);
+
+        // 步驟 D：計算時間差值與套用診斷邏輯
+        mergedData.forEach((d, idx) => {
+            d.timeDiff = d.landingAvgTime - d.pageAvgTime; // 時間差值
+            d.zSession = sessionsZ[idx];
+            d.zCvr = cvrZ[idx];
+
+            // 第一層：時間差走位判定
+            if (d.timeDiff > 20) d.role = "【轉運站】(適合放導購連結)";
+            else if (d.timeDiff < -20) d.role = "【委屈內容】(需檢查外部導流)";
+            else d.role = "【穩健內容】(內外表現一致)";
+
+            // 第二層：Z-Score 健康度判定
+            if (d.zSession > 0.5 && d.zCvr > 0.5) d.health = "🌟 明星網頁 (加碼推廣)";
+            else if (d.zSession < -0.5 && d.zCvr > 0.5) d.health = "💎 潛力寶石 (增加曝光)";
+            else if (d.zSession > 0.5 && d.zCvr < -0.5) d.health = "🚨 流量黑洞 (緊急優化)";
+            else d.health = "✅ 表現平穩";
+        });
+
+        // 依據外部流量大小排序
+        mergedData.sort((a, b) => b.sessions - a.sessions);
+
+        // 步驟 E：產生 HTML 表格
+        let tableHTML = `<table id="ga4StrategyTable" style="margin-top:0;">
+            <thead style="position: sticky; top: 0; z-index: 10;"><tr>
+                <th>排名</th>
+                <th style="width:25%">到達網頁路徑</th>
+                <th>工作階段<br>(外部吸客力)</th>
+                <th>轉換率(%)<br>(重要事件發生率)</th>
+                <th>時間差值(秒)<br>(到達時間 - 單頁時間)</th>
+                <th>網頁定位 (走位)</th>
+                <th>綜合健康度診斷</th>
+            </tr></thead><tbody>`; 
+        
+        mergedData.forEach((d, idx) => { 
+            let cvrPct = (d.cvr * 100).toFixed(2);
+            let timeDiffStr = d.timeDiff > 0 ? `+${d.timeDiff.toFixed(1)}` : d.timeDiff.toFixed(1);
+            let diffColor = d.timeDiff > 20 ? '#10b981' : (d.timeDiff < -20 ? '#ef4444' : '#333');
+
+            tableHTML += `<tr>
+                <td contenteditable="true">${idx + 1}</td>
+                <td class="text-left" contenteditable="true" style="word-break: break-all;">${d.path}</td>
+                <td contenteditable="true">${d.sessions.toLocaleString()}</td>
+                <td contenteditable="true">${cvrPct}%</td>
+                <td contenteditable="true" style="color: ${diffColor}; font-weight:bold;">${timeDiffStr}</td>
+                <td class="text-left" contenteditable="true">${d.role}</td>
+                <td class="text-left" contenteditable="true">${d.health}</td>
+            </tr>`; 
+        }); 
+        tableHTML += `</tbody></table>`; 
+        
+        document.getElementById('ga4StrategyResultArea').innerHTML = tableHTML; 
+        document.getElementById('blockGA4StrategyExport').style.display = 'block'; 
     }
 
 </script>
