@@ -1715,18 +1715,31 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                     eps: eps
                 };
 
-                // 🛑 防毒分流機制：抓出 Freego 與傳統爬蟲
-                // 特徵 A：事件數大於 20 (高互動爬蟲如 Freego)
-                // 特徵 B：參與度為 0 且 流量大 (傳統低級爬蟲)
-                if (sessions > 10 && (eps > 20 || engageRate === 0)) {
-                    item.health = "🤖 異常掃描 (已排除計算)";
-                    botData.push(item);
-                } 
-                // 正常人類流量 (排除極低流量雜訊)
-                else if (sessions >= 10) {
-                    processedData.push(item);
-                }
-            }
+                // 取得每個人的平均停留時間 (假設您的 CSV 裡有匯出這個欄位：平均單次工作階段參與時間)
+let avgTime = parseSafeNumber(row["平均單次工作階段參與時間"] || row["平均工作階段持續時間"] || 0);
+
+// 判斷是否為機器人 (只要符合以下任一「非人類行為」，就隔離)
+let isBot = false;
+
+// 1. 傳統笨爬蟲：完全沒互動秒離開 (虛胖到極致)
+if (engageRate === 0) isBot = true; 
+
+// 2. 超高速掃描器 (例如 Freego)：事件超級多，但待的時間不成比例的短
+// (例如：不到 10 秒鐘的時間內，竟然觸發了超過 15 個事件)
+if (eps > 15 && avgTime < 10) isBot = true;
+
+// 3. 終極暴力爬蟲：不管時間多長，單次造訪事件數破表 (例如 > 50)
+if (eps > 50) isBot = true;
+
+// 🛑 防毒分流機制：抓出掃描軟體與傳統爬蟲
+if (sessions > 10 && isBot) {
+    item.health = "🤖 異常掃描 (已排除計算)";
+    botData.push(item);
+} 
+// 正常人類流量 (排除極低流量雜訊，並確認非機器人)
+else if (sessions >= 10 && !isBot) {
+    processedData.push(item);
+}
         });
 
         if (processedData.length === 0) {
