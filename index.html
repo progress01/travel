@@ -1739,7 +1739,8 @@ if (sessions > 10 && isBot) {
 // 正常人類流量 (排除極低流量雜訊，並確認非機器人)
 else if (sessions >= 10 && !isBot) {
     processedData.push(item);
-}
+            }
+        }
         });
 
         if (processedData.length === 0) {
