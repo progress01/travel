@@ -233,7 +233,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 <div class="export-block" id="blockPageExport">
                     <h3 class="export-block-title">📊 網頁流量分析</h3>
                     <div id="monthlyPageDraft" class="report-draft" contenteditable="true"></div>
-                    <div><button class="action-btn btn-ai" onclick="copyDivContent('monthlyPageDraft')">📋 僅複製 AI 提示詞</button><button class="action-btn btn-blue" onclick="execCopyWithFormControls(document.getElementById('monthPageTable'))">📋 僅複製表格</button></div>
+                    <div><button class="action-btn btn-ai" onclick="copyDivContent('monthlyPageDraft')">📋 僅複製文字草稿</button><button class="action-btn btn-blue" onclick="execCopyWithFormControls(document.getElementById('monthPageTable'))">📋 僅複製表格</button></div>
                     <div class="paste-zone" contenteditable="true" data-placeholder="🧲 若有日流量折線圖，請點擊此處按 Ctrl+V 貼上..."></div>
                     <div class="img-caption" id="captionPage1" contenteditable="true">圖：熱門單元排行</div>
                     <div id="monthlyPageTableArea"></div>
@@ -243,7 +243,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 <div class="export-block" id="blockSearchExport">
                     <h3 class="export-block-title">🔍 站內搜尋分析</h3>
                     <div id="monthlySearchDraft" class="report-draft" contenteditable="true"></div>
-                    <div><button class="action-btn btn-ai" onclick="copyDivContent('monthlySearchDraft')">📋 僅複製 AI 提示詞</button><button class="action-btn btn-blue" onclick="execCopyWithFormControls(document.getElementById('monthSearchTable'))">📋 僅複製表格</button></div>
+                    <div><button class="action-btn btn-ai" onclick="copyDivContent('monthlySearchDraft')">📋 僅複製文字草稿</button><button class="action-btn btn-blue" onclick="execCopyWithFormControls(document.getElementById('monthSearchTable'))">📋 僅複製表格</button></div>
                     <div class="paste-zone" contenteditable="true" data-placeholder="🧲 點擊此處，按 Ctrl+V 貼上【站內搜尋】截圖..."></div>
                     <div class="img-caption" id="captionSearch1" contenteditable="true">圖：搜尋關鍵字統計</div>
                     <div id="monthlySearchTableArea"></div>
@@ -253,7 +253,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 <div class="export-block" id="blockSourceExport">
                     <h3 class="export-block-title">🌍 來源管道分析</h3>
                     <div id="monthlySourceDraft" class="report-draft" contenteditable="true"></div>
-                    <div><button class="action-btn btn-ai" onclick="copyDivContent('monthlySourceDraft')">📋 僅複製 AI 提示詞</button><button class="action-btn btn-blue" onclick="execCopyWithFormControls(document.getElementById('monthSourceTable'))">📋 僅複製表格</button></div>
+                    <div><button class="action-btn btn-ai" onclick="copyDivContent('monthlySourceDraft')">📋 僅複製文字草稿</button><button class="action-btn btn-blue" onclick="execCopyWithFormControls(document.getElementById('monthSourceTable'))">📋 僅複製表格</button></div>
                     <div class="paste-zone" contenteditable="true" data-placeholder="🧲 點擊此處，按 Ctrl+V 貼上【來源管道】相關圓餅圖..."></div>
                     <div class="img-caption" contenteditable="true">圖：使用者從哪裡來</div>
                     <div id="monthlySourceTableArea"></div>
@@ -336,14 +336,14 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                     <div class="export-block" id="blockSpeedDeskExport">
                         <h3 class="export-block-title">🖥️ 電腦版檢測總結</h3>
                         <div id="speedDesktopDraft" class="report-draft" contenteditable="true"></div>
-                        <button class="action-btn btn-ai" onclick="copyDivContent('speedDesktopDraft')">📋 僅複製 Prompt</button>
+                        <button class="action-btn btn-ai" onclick="copyDivContent('speedDesktopDraft')">📋 僅複製文字草稿</button>
                         <div id="speedDesktopTableArea"></div>
                         <button class="action-btn block-copy-btn" onclick="execCopyWithFormControls(document.getElementById('blockSpeedDeskExport'))">📦 打包複製電腦版總結</button>
                     </div>
                     <div class="export-block" id="blockSpeedMobExport">
                         <h3 class="export-block-title">📱 行動版檢測總結</h3>
                         <div id="speedMobileDraft" class="report-draft" contenteditable="true"></div>
-                        <button class="action-btn btn-ai" onclick="copyDivContent('speedMobileDraft')">📋 僅複製 Prompt</button>
+                        <button class="action-btn btn-ai" onclick="copyDivContent('speedMobileDraft')">📋 僅複製文字草稿</button>
                         <div id="speedMobileTableArea"></div>
                         <button class="action-btn block-copy-btn" onclick="execCopyWithFormControls(document.getElementById('blockSpeedMobExport'))">📦 打包複製行動版總結</button>
                     </div>
@@ -568,7 +568,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
         tempTextarea.select(); 
         try { 
             document.execCommand('copy'); 
-            alert('✅ 提示詞/草稿已成功複製！'); 
+            alert('✅ 文字草稿已成功複製！'); 
         } catch (err) {} 
         document.body.removeChild(tempTextarea); 
     }
@@ -621,7 +621,6 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
     ];
     let siteNames = [];
 
-    // 🌟 修復 1：增加 try-catch 防止損壞的 LocalStorage 讓整個網頁白屏死機
     function initGlobalSites() {
         let saved = localStorage.getItem('customSites');
         if (saved) { 
@@ -703,7 +702,6 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
         let dStr = String(dateVal).trim(); 
         if(!dStr) return null;
 
-        // 強制解析中文日期，例如 "2026年1月5日" -> 5
         let zhMatch = dStr.match(/(\d{1,2})[號日]/);
         if (zhMatch) return parseInt(zhMatch[1], 10);
 
@@ -909,7 +907,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
             });
             
             if(monthPageTotals.views === 0) { 
-                monthPageData.forEach(r => { monthPageTotals.views += r.views; monthPageTotals.users += r.users; }); 
+                monthPageData.forEach(r => { monthPageTotals.views += r.views; });
             } 
             
             if(monthPageData.length === 0) {
@@ -996,7 +994,7 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
             });
             
             if(monthSourceTotals.views === 0) { 
-                monthSourceData.forEach(r => { monthSourceTotals.views += r.views; monthSourceTotals.users += r.users; }); 
+                monthSourceData.forEach(r => { monthSourceTotals.views += r.views; }); 
             } 
             
             if(monthSourceData.length === 0) {
@@ -1028,7 +1026,8 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
             top30.forEach(item => { catCount[item.category] = (catCount[item.category] || 0) + 1; });
             let catSummaryText = Object.keys(catCount).map(k => `「${k}」${catCount[k]}篇`).join('、');
 
-            let promptText = `請作為專業數據分析師，使用「中立、客觀、專業統計呈現」風格潤飾以下草稿。勿改變數字與排名，直接輸出結果。\n\n【網站】：${siteName}\n【月份】：${dateStr}\n---\n${siteName}於${dateStr}，總瀏覽數為 ${monthPageTotals.views.toLocaleString()} 次，使用者 ${monthPageTotals.users.toLocaleString()} 位，平均每位使用者的瀏覽數 ${avgVPU} 頁，平均參與時間為 ${Math.round(monthPageTotals.avgTime)} 秒。\n\n網頁主題分佈觀察：本月熱門前30名網頁中，以屬性分類包含：${catSummaryText}。\n\n熱門單元/網頁前三名：\n`;
+            // ★ 修改：拿掉提示詞，只保留純粹的草稿文字
+            let promptText = `【網站】：${siteName}\n【月份】：${dateStr}\n---\n${siteName}於${dateStr}，總瀏覽數為 ${monthPageTotals.views.toLocaleString()} 次，使用者 ${monthPageTotals.users.toLocaleString()} 位，平均每位使用者的瀏覽數 ${avgVPU} 頁，平均參與時間為 ${Math.round(monthPageTotals.avgTime)} 秒。\n\n網頁主題分佈觀察：本月熱門前30名網頁中，以屬性分類包含：${catSummaryText}。\n\n熱門單元/網頁前三名：\n`;
             if(top30[0]) promptText += `1.「${top30[0].title}」${top30[0].views.toLocaleString()} 次。\n`; 
             if(top30[1]) promptText += `2.「${top30[1].title}」${top30[1].views.toLocaleString()} 次。\n`; 
             if(top30[2]) promptText += `3.「${top30[2].title}」${top30[2].views.toLocaleString()} 次。\n`;
@@ -1052,7 +1051,9 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
         // 2. 搜尋區塊
         if (monthSearchData.length > 0) {
             let top3 = monthSearchData.slice(0, 3);
-            let promptText = `請作為專業數據分析師，使用「中立、客觀、專業統計呈現」風格潤飾以下草稿。勿改變數字與排名，直接輸出結果。\n\n【網站】：${siteName}\n【月份】：${dateStr}\n---\n${dateStr}，使用${siteName}站內搜尋之次數為 ${monthSearchTotals.searches.toLocaleString()} 次。搜尋次數前三名為：\n`;
+            
+            // ★ 修改：拿掉提示詞，只保留純粹的草稿文字
+            let promptText = `【網站】：${siteName}\n【月份】：${dateStr}\n---\n${dateStr}，使用${siteName}站內搜尋之次數為 ${monthSearchTotals.searches.toLocaleString()} 次。搜尋次數前三名為：\n`;
             if(top3[0]) promptText += `1.「${top3[0].term}」${top3[0].count.toLocaleString()} 次。\n`; 
             if(top3[1]) promptText += `2.「${top3[1].term}」${top3[1].count.toLocaleString()} 次。\n`; 
             if(top3[2]) promptText += `3.「${top3[2].term}」${top3[2].count.toLocaleString()} 次。\n`;
@@ -1088,7 +1089,9 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
             });
 
             let top3 = monthSourceData.slice(0, 3);
-            let promptText = `請作為專業數據分析師，使用「中立、客觀、專業統計呈現」風格潤飾以下草稿。勿改變數字與排名，直接輸出結果。\n\n【網站】：${siteName}\n【月份】：${dateStr}\n---\n${siteName}依「使用者來源管道」分布統計，前三名最初招攬到使用者的來源為：\n`;
+            
+            // ★ 修改：拿掉提示詞，只保留純粹的草稿文字
+            let promptText = `【網站】：${siteName}\n【月份】：${dateStr}\n---\n${siteName}依「使用者來源管道」分布統計，前三名最初招攬到使用者的來源為：\n`;
             if(top3[0]) promptText += `1.「${top3[0].source}」帶來 ${top3[0].users.toLocaleString()} 人。\n`; 
             if(top3[1]) promptText += `2.「${top3[1].source}」帶來 ${top3[1].users.toLocaleString()} 人。\n`; 
             if(top3[2]) promptText += `3.「${top3[2].source}」帶來 ${top3[2].users.toLocaleString()} 人。\n`;
@@ -1333,7 +1336,8 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 let deskSeoMinCount = speedDesktopData.filter(d => d.seo === deskSeoMin).length; 
                 let deskSeoMax = Math.max(...speedDesktopData.map(d => d.seo)); 
                 
-                let desktopPrompt = `請作為專業分析師，客觀潤飾以下草稿：\n\n${dateStr}使用Google PageSpeed Insights工具定期檢測「化學署全球資訊網」與各主題網首頁載入效能。\n其中電腦版效能分數除${deskUnder80Names}等${deskUnder80.length}個網站未達80分以上，其餘${deskOver80Count}個網站分數都超過80分以上。「無障礙分數」有${deskA11yOver90Count}個網站達到90分以上。「搜尋引擎最佳化」有${deskSeoMinCount}個最低為${deskSeoMin}分，其餘皆為${deskSeoMax}分。`; 
+                // ★ 修改：拿掉提示詞，只保留純粹的草稿文字
+                let desktopPrompt = `${dateStr}使用Google PageSpeed Insights工具定期檢測「化學署全球資訊網」與各主題網首頁載入效能。\n其中電腦版效能分數除${deskUnder80Names}等${deskUnder80.length}個網站未達80分以上，其餘${deskOver80Count}個網站分數都超過80分以上。「無障礙分數」有${deskA11yOver90Count}個網站達到90分以上。「搜尋引擎最佳化」有${deskSeoMinCount}個最低為${deskSeoMin}分，其餘皆為${deskSeoMax}分。`; 
                 document.getElementById('speedDesktopDraft').innerText = desktopPrompt; 
                 
                 let deskTable = `<table id="speedDesktopTable"><thead><tr><th>項次</th><th>網站名稱</th><th>效能</th><th>無障礙</th><th>最佳做法</th><th>SEO</th></tr></thead><tbody>`; 
@@ -1354,7 +1358,8 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
                 let mobSeoMin = Math.min(...speedMobileData.map(d => d.seo)); 
                 let mobSeoMinCount = speedMobileData.filter(d => d.seo === mobSeoMin).length; 
                 
-                let mobilePrompt = `請作為專業分析師，客觀潤飾以下草稿：\n\n行動版效能分數${mobPerfMaxNames}最高${mobPerfMax}分，${mobA11yMaxNames}無障礙分數最高為${mobA11yMax}分，${mobBpMaxNames}網站「最佳做法」分數最高為${mobBpMax}分。有${mobSeoMinCount}個網站「搜尋引擎最佳化」最低為${mobSeoMin}分。`; 
+                // ★ 修改：拿掉提示詞，只保留純粹的草稿文字
+                let mobilePrompt = `行動版效能分數${mobPerfMaxNames}最高${mobPerfMax}分，${mobA11yMaxNames}無障礙分數最高為${mobA11yMax}分，${mobBpMaxNames}網站「最佳做法」分數最高為${mobBpMax}分。有${mobSeoMinCount}個網站「搜尋引擎最佳化」最低為${mobSeoMin}分。`; 
                 document.getElementById('speedMobileDraft').innerText = mobilePrompt; 
                 
                 let mobTable = `<table id="speedMobileTable"><thead><tr><th>項次</th><th>網站名稱</th><th>效能</th><th>無障礙</th><th>最佳做法</th><th>SEO</th></tr></thead><tbody>`; 
@@ -1692,7 +1697,6 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
         reader.readAsArrayBuffer(e.target.files[0]); 
     });
 
-    // 🌟 修復 3：排版整理並修正隱藏邏輯錯誤
     function processTrafficHealth() {
         if (trafficAcqData.length === 0) {
             alert("請先上傳流量開發資料！"); return;
@@ -1706,7 +1710,6 @@ Referral, AI : chatgpt, perplexity, gemini</textarea>
             let hourKey = Object.keys(row).find(k => k.includes("小時") || k.includes("Hour"));
             let sessionKey = Object.keys(row).find(k => k.includes("工作階段") || k.includes("Sessions"));
             
-            // 🌟 修復 2：加上「參與率」與「互動率」，防止 GA4 改版導致全部資料被跳過！
             let engageKey = Object.keys(row).find(k => k.includes("參與度") || k.includes("參與率") || k.includes("互動率") || k.includes("Engagement rate"));
             let epsKey = Object.keys(row).find(k => k.includes("每個工作階段的事件數") || k.includes("Events per session")); 
 
